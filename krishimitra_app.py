@@ -1,6 +1,18 @@
+# krishimitra_app.py
 import streamlit as st
 from datetime import datetime
 import base64
+import os
+from gtts import gTTS
+import pandas as pd
+
+try:
+    from streamlit_chat import message
+    import openai
+except ImportError:
+    message = None
+    openai = None
+
 # ------------------ Language Data ------------------
 LANGUAGE_DATA = {
     "English": {
@@ -59,7 +71,6 @@ LANGUAGE_DATA = {
         "weather_alert": "🌦️ मौसम चेतावनी",
         "crop_calendar": "📅 फसल कैलेंडर",
     }
-    # Add other languages here as needed
 }
 
 # ------------------ Sidebar for Language ------------------
@@ -69,6 +80,39 @@ lang_content = LANGUAGE_DATA[language]
 
 # ------------------ Main UI ------------------
 st.title(lang_content["welcome"])
+
+# ------------------ Chatbot (OpenAI) ------------------
+def safe_chatbot():
+    """Safely handle chatbot input and OpenAI API call with error handling and input validation."""
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    if not openai.api_key:
+        st.warning("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+        return
+    st.subheader("🧠 Ask KrishiMitra (Chatbot)")
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    user_input = st.text_input("Ask your farming-related question...")
+    if st.button("Send", key="chatbot_send"):
+        if not user_input or not user_input.strip():
+            st.error("Please enter a valid question.")
+        else:
+            st.session_state.messages.append({"role": "user", "content": user_input.strip()})
+            try:
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=st.session_state.messages
+                )
+                reply = response['choices'][0]['message']['content']
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+            except Exception as e:
+                st.error(f"Error communicating with chatbot: {e}")
+    for i, msg in enumerate(st.session_state.messages):
+        message(msg["content"], is_user=(msg["role"] == "user"), key=str(i))
+
+if openai and message:
+    safe_chatbot()
+else:
+    st.info("Chatbot feature coming soon!")
 
 # ------------------ Fertilizer Recommendation ------------------
 st.header(lang_content["fertilizer"])
@@ -119,56 +163,53 @@ fertilizer_info = {
 crop = st.selectbox("Select Crop", list(fertilizer_info.keys()))
 soil = st.selectbox("Soil Type", list(fertilizer_info[crop].keys()))
 if st.button("Get Recommendation"):
-    st.success(fertilizer_info[crop][soil])
+    try:
+        st.success(fertilizer_info[crop][soil])
+    except Exception as e:
+        st.error(f"Could not fetch recommendation: {e}")
 
-# ------------------ Loan/Subsidy Info ------------------
 # ------------------ Loan/Subsidy Info ------------------
 st.header(lang_content["loan"])
 age = st.number_input("Enter your age", min_value=18, max_value=80)
 holding = st.selectbox("Land holding (acres)", ["<1", "1-5", ">5"])
-
 if st.button("Check Eligibility"):
-    schemes = []
-
-    # Age-based
-    if age < 40:
-        schemes.append("Kisan Credit Card (KCC)")
-        schemes.append("PM-KISAN")
-        schemes.append("Youth Agri Loan (NABARD)")
-    elif age >= 60:
-        schemes.append("Senior Farmer Pension Scheme")
-
-    # Landholding-based
-    if holding == "<1":
-        schemes.extend([
-            "PM-KISAN",
-            "KALIA Scheme (Odisha)",
-            "YSR Rythu Bharosa (Andhra Pradesh)",
-            "Mukhya Mantri Krishi Ashirwad (Jharkhand)"
-        ])
-    elif holding == "1-5":
-        schemes.extend([
-            "NABARD Subsidized Loans",
-            "Solar Pump Subsidy",
-            "Crop Insurance Scheme (PMFBY)",
-            "Fasal Bima Yojana"
-        ])
-    elif holding == ">5":
-        schemes.extend([
-            "NABARD Long-Term Projects",
-            "Warehouse Construction Loans",
-            "Tractor Subsidy Scheme"
-        ])
-
-    # Remove duplicates
-    schemes = list(set(schemes))
-
-    if schemes:
-        st.success("✅ You are eligible for the following schemes:")
-        for scheme in schemes:
-            st.markdown(f"- {scheme}")
-    else:
-        st.warning("❌ Not eligible for current subsidies based on given inputs.")
+    try:
+        schemes = []
+        if age < 40:
+            schemes.append("Kisan Credit Card (KCC)")
+            schemes.append("PM-KISAN")
+            schemes.append("Youth Agri Loan (NABARD)")
+        elif age >= 60:
+            schemes.append("Senior Farmer Pension Scheme")
+        if holding == "<1":
+            schemes.extend([
+                "PM-KISAN",
+                "KALIA Scheme (Odisha)",
+                "YSR Rythu Bharosa (Andhra Pradesh)",
+                "Mukhya Mantri Krishi Ashirwad (Jharkhand)"
+            ])
+        elif holding == "1-5":
+            schemes.extend([
+                "NABARD Subsidized Loans",
+                "Solar Pump Subsidy",
+                "Crop Insurance Scheme (PMFBY)",
+                "Fasal Bima Yojana"
+            ])
+        elif holding == ">5":
+            schemes.extend([
+                "NABARD Long-Term Projects",
+                "Warehouse Construction Loans",
+                "Tractor Subsidy Scheme"
+            ])
+        schemes = list(set(schemes))
+        if schemes:
+            st.success("✅ You are eligible for the following schemes:")
+            for scheme in schemes:
+                st.markdown(f"- {scheme}")
+        else:
+            st.warning("❌ Not eligible for current subsidies based on given inputs.")
+    except Exception as e:
+        st.error(f"Error checking eligibility: {e}")
 
 # ------------------ Government Schemes ------------------
 st.subheader("📜 Government Schemes")
@@ -179,7 +220,10 @@ schemes = {
     "NABARD": "Irrigation and farm infra support",
     "Mahila Kisan Sashaktikaran": "Skill, input and support for women farmers"
 }
-st.json(schemes)
+try:
+    st.json(schemes)
+except Exception as e:
+    st.error(f"Could not display schemes: {e}")
 
 # ------------------ Weather Alerts ------------------
 st.header(lang_content["weather_alert"])
@@ -190,7 +234,10 @@ weather_data = {
     "MP": "⛈️ Thunderstorms likely in evening",
     "Bihar": "🌦️ Cloudy with chances of rain"
 }
-st.warning(weather_data[region])
+try:
+    st.warning(weather_data[region])
+except Exception as e:
+    st.error(f"Could not display weather alert: {e}")
 
 # ------------------ Crop Calendar ------------------
 st.header(lang_content["crop_calendar"])
@@ -200,7 +247,10 @@ calendar_data = {
     "Kharif": "Paddy, Maize, Bajra",
     "Zaid": "Watermelon, Cucumber"
 }
-st.success(calendar_data[season])
+try:
+    st.success(calendar_data[season])
+except Exception as e:
+    st.error(f"Could not display crop calendar: {e}")
 
 # ------------------ Mandi Prices ------------------
 st.subheader("💸 Mandi Prices")
@@ -230,32 +280,19 @@ mandi_data = {
     "cabbage": "₹850/qtl",
     "peas": "₹1400/qtl"
 }
-st.table(mandi_data)
-# Place this right after your imports and before any UI code
+try:
+    st.table(mandi_data)
+except Exception as e:
+    st.error(f"Could not display mandi prices: {e}")
 
-def set_bg_from_url(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# ------------------ Map Locator (Coming Soon) ------------------
+st.subheader("📍 Locate Nearby Services")
+st.info("Map locator feature coming soon!")
 
-# Example usage:
-set_bg_from_url("https://ibb.co/n4w8k5F.jpg")
-
-
-# ------------------ Task Selection ------------------
-st.subheader("📋 Task for Today")
-tasks = ["Irrigation", "Apply pesticide to paddy", "Harvest tomatoes"]
-task = st.selectbox("Select Task", tasks)
-st.success(f"Your task for today: {task}")
+# ------------------ Disease Detection (Coming Soon) ------------------
+st.subheader("🌱 Crop Disease Detection")
+st.info("Crop disease detection feature coming soon!")
 
 # ------------------ Footer ------------------
 st.markdown("---")
-st.markdown("Made with ❤️ for Indian Farmers - KrishiMitra")
+st.markdown("Made with ❤️ for Indian Farmers - KrishiMitra") 

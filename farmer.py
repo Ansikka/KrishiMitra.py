@@ -8,7 +8,10 @@ from streamlit_chat import message
 import openai
 #----------------
 
-openai.api_key = "your-openai-api-key"  # Replace with your key
+openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    st.error("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+    st.stop()
 
 st.subheader("🧠 Ask KrishiMitra (Chatbot)")
 
