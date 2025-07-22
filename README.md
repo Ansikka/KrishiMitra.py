@@ -36,7 +36,8 @@ gap for rural farmers and help improve productivity and decision-making in agric
 
 ###  Map Locator (Planned)
 - Integration of location-based mandi locators and nearest agriculture centers.
-  
+
+### File Management
 KrishiMitra/
 
 ├── assets  
@@ -51,62 +52,55 @@ KrishiMitra/
 
 └── requirements.txt    
 
- Tech Stack
-Frontend: Streamlit
+### Tech Stack
+- Frontend: Streamlit
 
-Backend: Python
+- Backend: Python
 
-Libraries:
+- Libraries: gTTS for text-to-speech; Pillow for image processing requests; geopy for weather/location; OpenCV and ML models for disease detection (future).
 
-gTTS for text-to-speech
-
-Pillow for image processing
-
-requests, geopy for weather/location
-
-OpenCV and ML models for disease detection (future)
-
- Getting Started
-Prerequisites
-Python 3.8+
-
-Install dependencies:
-
-bash
-Copy
-Edit
+### How to get started
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/<your-username>/KrishiMitra.py.git
+cd KrishiMitra.py
+```
+#### 2. Prerequisites
+- Install Python 3.8+
+- Create and activate a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
+#### Install Dependencies
+```bash
 pip install -r requirements.txt
-Run the App
-bash
-Copy
-Edit
+```
+#### Run the app
+```bash
 streamlit run krishimitra_app.py
-Government Schemes Included
-PM-KISAN, PMFBY, KCC, Soil Health Card, eNAM, RKVY, PUSA Krishi
+```
 
-Women-specific schemes: Mahila Kisan Sashaktikaran, Annapurna Scheme, and more.
+### Government Schemes included: PM-KISAN, PMFBY, KCC, Soil Health Card, eNAM, RKVY, PUSA Krishi.
 
- Future Improvements
-Chatbot with NLP
+### Women-specific schemes: Mahila Kisan Sashaktikaran, Annapurna Scheme, and more.
 
-Smart crop recommendation system
+### Future Improvements:
+1. Chatbot with NLP
+2. Smart crop recommendation system
+3. Automated SMS alerts
+4. Real-time news and alerts for farmers
 
-Automated SMS alerts
-
-Real-time news and alerts for farmers
-
- Contributing
+## About Contributions
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
- License
+#### License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
- Acknowledgements
+#### Acknowledgements
 NumFOCUS and Open Science Labs
-
 Indian Council of Agricultural Research (ICAR)
-
 Government of India Open Data APIs
 
-Farmers who inspire innovation every day 🌾
-Made with love for our Farmer!!
+Farmers who inspire innovation every day 🌾 Made with love for our farmers. 
