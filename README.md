@@ -1,112 +1,65 @@
-#  KrishiMitra - Empowering Farmers with Smart Agriculture Tools
+<p align="center">
+  <img src="https://img.icons8.com/color/96/tractor.png" width="80"/>
+</p>
 
-**KrishiMitra** is an all-in-one AI-powered digital assistant tailored to support Indian farmers by providing vital agricultural insights,
-government schemes, real-time mandi prices, weather updates, crop disease detection, and multilingual support. It aims to bridge the technology
-gap for rural farmers and help improve productivity and decision-making in agriculture.
+<h1 align="center">🌾 KrishiMitra 2.0 — AI-Powered Assistant for Indian Farmers</h1>
 
-##  Features
+<p align="center">
+  Empowering Indian agriculture with AI | Multilingual Support | Disease Detection | Smart Farming
+</p>
 
-###  Multi-Language Support
-- Supports regional languages including **Hindi**, **Punjabi**, **Bhojpuri**, **Tamil**, **Telugu**, **Kannada**, and **Awadhi**.
-- Text-to-speech and translated messages using `gTTS` and custom dictionaries.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8%2B-green?style=flat&logo=python"/>
+  <img src="https://img.shields.io/badge/Streamlit-%23FF4B4B.svg?&style=flat&logo=streamlit&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Open%20Source-%2312100E.svg?&style=flat&logo=github"/>
+  <img src="https://img.shields.io/badge/Made%20for-GSSoC-orange"/>
+</p>
 
-###  Daily Task Reminders
-- Farmers can select and schedule daily agricultural tasks.
-- Tasks are displayed prominently for better time and farm management.
+---
 
-###  Mandi Prices
-- Real-time mandi prices for crops like wheat, rice, mustard, pulses, vegetables, fruits, and more.
-- Helps farmers make informed decisions on crop selling.
+## ✨ Overview
 
-###  Weather Forecast
-- Location-based weather forecasts and alerts to prevent crop damage and plan irrigation.
+**KrishiMitra 2.0** is an open-source, AI-powered digital assistant tailored for Indian farmers. With a mission to bridge the tech gap in agriculture, it provides real-time solutions for **crop disease detection**, **multilingual remedies**, **mandi prices**, **weather updates**, and more — all through an intuitive interface.
 
-###  Crop Disease Detection
-- Upload crop images to detect diseases using machine learning models (coming soon).
-- Early diagnosis improves crop yield and reduces loss.
+---
 
-###  BhashaBuddy (Language Helper)
-- Converts agricultural messages into native languages to support low-literacy farmers.
+## 🔥 Features
 
-###  Chatbot (Coming Soon)
-- An intelligent chatbot for answering agricultural queries, farming techniques, and more.
+| Feature | Description |
+|--------|-------------|
+| 🧠 **Crop Disease Detection** | Upload a photo → AI detects disease → Gives remedies (organic & chemical) |
+| 💬 **BhashaBuddy** | Converts advice into local languages + speaks it aloud via TTS |
+| ☁️ **Weather Forecasting** | Accurate weather insights for proactive planning |
+| 📊 **Mandi Prices** | Real-time prices for crops in your local mandi |
+| 🌱 **Crop Recommender** | Suggests crops based on region, season, and soil |
+| 🧾 **Govt. Schemes** | Latest schemes for farmers (male & female) |
+| 🤖 **ChatBot (Coming Soon)** | Get farming advice instantly using Q&A bot |
 
-###  Government Schemes
-- Lists both men and women-centric schemes for financial assistance, insurance, and innovation.
+---
 
-###  Map Locator (Planned)
-- Integration of location-based mandi locators and nearest agriculture centers.
-  
+## 🧠 Tech Stack
+
+- **Frontend**: [Streamlit](https://streamlit.io/)
+- **Backend**: Python
+- **ML Libraries**: OpenCV, scikit-learn (upcoming)
+- **APIs**: OpenWeatherMap, Agmarknet
+- **Tools**: `gTTS`, `Pillow`, `Geopy`, `Requests`
+
+---
+
+## 📁 Project Structure
+
+```bash
 KrishiMitra/
+├── modules/            # All logic modules
+│   ├── disease_detection.py
+│   ├── remedies.py
+│   ├── weather.py
+│   └── crop_recommender.py
+├── data/               # JSON / CSV files
+├── assets/             # Images / audio
+├── krishimitra_app.py  # Main app
+├── requirements.txt
+└── README.md
 
-├── assets  
 
-├── data/           
-
-├── modules/      
-
-├── krishimitra_app.py 
-
-├── README.md        
-
-└── requirements.txt    
-
- Tech Stack
-Frontend: Streamlit
-
-Backend: Python
-
-Libraries:
-
-gTTS for text-to-speech
-
-Pillow for image processing
-
-requests, geopy for weather/location
-
-OpenCV and ML models for disease detection (future)
-
- Getting Started
-Prerequisites
-Python 3.8+
-
-Install dependencies:
-
-bash
-Copy
-Edit
-pip install -r requirements.txt
-Run the App
-bash
-Copy
-Edit
-streamlit run krishimitra_app.py
-Government Schemes Included
-PM-KISAN, PMFBY, KCC, Soil Health Card, eNAM, RKVY, PUSA Krishi
-
-Women-specific schemes: Mahila Kisan Sashaktikaran, Annapurna Scheme, and more.
-
- Future Improvements
-Chatbot with NLP
-
-Smart crop recommendation system
-
-Automated SMS alerts
-
-Real-time news and alerts for farmers
-
- Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
- License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
- Acknowledgements
-NumFOCUS and Open Science Labs
-
-Indian Council of Agricultural Research (ICAR)
-
-Government of India Open Data APIs
-
-Farmers who inspire innovation every day 🌾
-Made with love for our Farmer!!
