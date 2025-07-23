@@ -1,0 +1,137 @@
+{
+  "wheat": {
+    "seed_cost": 1200,
+    "fertilizer": 800,
+    "labor_cost": 600,
+    "irrigation_cost": 300,
+    "pest_control_cost": 200,
+    "yield": 22,
+    "market_price": 1900
+  },
+  "rice": {
+    "seed_cost": 1500,
+    "fertilizer": 1000,
+    "labor_cost": 700,
+    "irrigation_cost": 500,
+    "pest_control_cost": 250,
+    "yield": 18,
+    "market_price": 2200
+  },
+  "maize": {
+    "seed_cost": 1000,
+    "fertilizer": 700,
+    "labor_cost": 500,
+    "irrigation_cost": 250,
+    "pest_control_cost": 150,
+    "yield": 25,
+    "market_price": 1700
+  },
+  "potato": {
+    "seed_cost": 2000,
+    "fertilizer": 1200,
+    "labor_cost": 1000,
+    "irrigation_cost": 400,
+    "pest_control_cost": 300,
+    "yield": 30,
+    "market_price": 1200
+  },
+  "mustard": {
+    "seed_cost": 800,
+    "fertilizer": 600,
+    "labor_cost": 400,
+    "irrigation_cost": 200,
+    "pest_control_cost": 250,
+    "yield": 15,
+    "market_price": 5500
+  },
+  "sugarcane": {
+    "seed_cost": 2500,
+    "fertilizer": 1500,
+    "labor_cost": 1200,
+    "irrigation_cost": 600,
+    "pest_control_cost": 400,
+    "yield": 800,
+    "market_price": 340
+  },
+  "tomato": {
+    "seed_cost": 1500,
+    "fertilizer": 900,
+    "labor_cost": 800,
+    "irrigation_cost": 350,
+    "pest_control_cost": 350,
+    "yield": 25,
+    "market_price": 1100
+  },
+  "soybean": {
+    "seed_cost": 900,
+    "fertilizer": 650,
+    "labor_cost": 450,
+    "irrigation_cost": 200,
+    "pest_control_cost": 200,
+    "yield": 20,
+    "market_price": 4800
+  },
+  "cotton": {
+    "seed_cost": 1800,
+    "fertilizer": 1000,
+    "labor_cost": 900,
+    "irrigation_cost": 300,
+    "pest_control_cost": 500,
+    "yield": 15,
+    "market_price": 6600
+  },
+  "barley": {
+    "seed_cost": 700,
+    "fertilizer": 500,
+    "labor_cost": 400,
+    "irrigation_cost": 150,
+    "pest_control_cost": 150,
+    "yield": 20,
+    "market_price": 1600
+  },
+  "chana": {
+    "seed_cost": 1000,
+    "fertilizer": 600,
+    "labor_cost": 500,
+    "irrigation_cost": 200,
+    "pest_control_cost": 200,
+    "yield": 18,
+    "market_price": 5400
+  },
+  "groundnut": {
+    "seed_cost": 1200,
+    "fertilizer": 700,
+    "labor_cost": 600,
+    "irrigation_cost": 250,
+    "pest_control_cost": 250,
+    "yield": 15,
+    "market_price": 5500
+  },
+  "bajra": {
+    "seed_cost": 600,
+    "fertilizer": 400,
+    "labor_cost": 350,
+    "irrigation_cost": 100,
+    "pest_control_cost": 100,
+    "yield": 18,
+    "market_price": 2150
+  },
+  "moong_dal": {
+    "seed_cost": 1100,
+    "fertilizer": 600,
+    "labor_cost": 450,
+    "irrigation_cost": 150,
+    "pest_control_cost": 200,
+    "yield": 12,
+    "market_price": 7275
+  },
+  "onion": {
+    "seed_cost": 1400,
+    "fertilizer": 800,
+    "labor_cost": 900,
+    "irrigation_cost": 400,
+    "pest_control_cost": 300,
+    "yield": 20,
+    "market_price": 900
+  }
+}
