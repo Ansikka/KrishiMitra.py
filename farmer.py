@@ -6,48 +6,34 @@ from gtts import gTTS
 import os
 from streamlit_chat import message
 import openai
-#----------------
+import plotly.express as px
+import plotly.graph_objects as go
+import json
+import random
 
-openai.api_key = "your-openai-api-key"  # Replace with your key
-
-st.subheader("🧠 Ask KrishiMitra (Chatbot)")
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-user_input = st.text_input("Ask your farming-related question...")
-
-if user_input:
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # or "gpt-4" if you have access
-        messages=st.session_state.messages
+# Set background image
+def set_bg_local(image_file):
+    with open(image_file, "rb") as file:
+        encoded = base64.b64encode(file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/jpg;base64,{encoded}");
+            background-size: cover;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
     )
-    reply = response['choices'][0]['message']['content']
-    st.session_state.messages.append({"role": "assistant", "content": reply})
 
-for i, msg in enumerate(st.session_state.messages):
-    message(msg["content"], is_user=(msg["role"] == "user"), key=str(i))
-#-------------voice assistance--------------
-def text_to_speech(text):
-    tts = gTTS(text=text, lang='en')
-    tts.save("output.mp3")
-    audio_file = open("output.mp3", "rb")
-    st.audio(audio_file.read(), format="audio/mp3")
+# Update this path to your local image file
+set_bg_local("C:\\Users\\chait\\OneDrive\\Desktop\\OpenSource Contribution\\KrishiMitra.py\\open.jpeg")
 
-if st.button("🔊 Listen to Alert"):
-    text_to_speech(weather_data[region])
-#---------------------map locator ------------------
-st.subheader("📍 Locate Nearby Services")
+# OpenAI API key
+openai.api_key = "your-openai-api-key"  # Replace with your actual OpenAI API key
 
-data = pd.DataFrame({
-    'lat': [26.9124, 26.8467, 26.5045],  # Example coordinates (Jaipur, Lucknow, Kanpur)
-    'lon': [75.7873, 80.9462, 80.2270],
-    'service': ['Krishi Center Jaipur', 'Agri Input Store Lucknow', 'Fertilizer Unit Kanpur']
-})
-st.map(data)
-# ------------------ Language Data ------------------
+# Language Data
 LANGUAGE_DATA = {
     "English": {
         "welcome": "🌾 Welcome to KrishiMitra!",
@@ -105,18 +91,51 @@ LANGUAGE_DATA = {
         "weather_alert": "🌦️ मौसम चेतावनी",
         "crop_calendar": "📅 फसल कैलेंडर",
     }
-    # Add other languages here as needed
 }
 
-# ------------------ Sidebar for Language ------------------
+# Sidebar for Language
 st.sidebar.title("🌐 Select Language")
 language = st.sidebar.selectbox("Choose your preferred language:", list(LANGUAGE_DATA.keys()))
 lang_content = LANGUAGE_DATA[language]
 
-# ------------------ Main UI ------------------
+# Main UI
 st.title(lang_content["welcome"])
 
-# ------------------ Fertilizer Recommendation ------------------
+# Chatbot
+st.subheader("🧠 Ask KrishiMitra (Chatbot)")
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+user_input = st.text_input("Ask your farming-related question...")
+if user_input:
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=st.session_state.messages
+    )
+    reply = response['choices'][0]['message']['content']
+    st.session_state.messages.append({"role": "assistant", "content": reply})
+
+for i, msg in enumerate(st.session_state.messages):
+    message(msg["content"], is_user=(msg["role"] == "user"), key=str(i))
+
+# Voice Assistance
+def text_to_speech(text):
+    tts = gTTS(text=text, lang='en')
+    tts.save("output.mp3")
+    audio_file = open("output.mp3", "rb")
+    st.audio(audio_file.read(), format="audio/mp3")
+
+# Map Locator
+st.subheader("📍 Locate Nearby Services")
+data = pd.DataFrame({
+    'lat': [26.9124, 26.8467, 26.5045],
+    'lon': [75.7873, 80.9462, 80.2270],
+    'service': ['Krishi Center Jaipur', 'Agri Input Store Lucknow', 'Fertilizer Unit Kanpur']
+})
+st.map(data)
+
+# Fertilizer Recommendation
 st.header(lang_content["fertilizer"])
 fertilizer_info = {
     "Wheat": {
@@ -167,24 +186,18 @@ soil = st.selectbox("Soil Type", list(fertilizer_info[crop].keys()))
 if st.button("Get Recommendation"):
     st.success(fertilizer_info[crop][soil])
 
-# ------------------ Loan/Subsidy Info ------------------
-# ------------------ Loan/Subsidy Info ------------------
+# Loan/Subsidy Info
 st.header(lang_content["loan"])
 age = st.number_input("Enter your age", min_value=18, max_value=80)
 holding = st.selectbox("Land holding (acres)", ["<1", "1-5", ">5"])
-
 if st.button("Check Eligibility"):
     schemes = []
-
-    # Age-based
     if age < 40:
         schemes.append("Kisan Credit Card (KCC)")
         schemes.append("PM-KISAN")
         schemes.append("Youth Agri Loan (NABARD)")
     elif age >= 60:
         schemes.append("Senior Farmer Pension Scheme")
-
-    # Landholding-based
     if holding == "<1":
         schemes.extend([
             "PM-KISAN",
@@ -205,10 +218,7 @@ if st.button("Check Eligibility"):
             "Warehouse Construction Loans",
             "Tractor Subsidy Scheme"
         ])
-
-    # Remove duplicates
     schemes = list(set(schemes))
-
     if schemes:
         st.success("✅ You are eligible for the following schemes:")
         for scheme in schemes:
@@ -216,7 +226,7 @@ if st.button("Check Eligibility"):
     else:
         st.warning("❌ Not eligible for current subsidies based on given inputs.")
 
-# ------------------ Government Schemes ------------------
+# Government Schemes
 st.subheader("📜 Government Schemes")
 schemes = {
     "PM-KISAN": "₹6000/year in 3 installments",
@@ -227,7 +237,7 @@ schemes = {
 }
 st.json(schemes)
 
-# ------------------ Weather Alerts ------------------
+# Weather Alerts
 st.header(lang_content["weather_alert"])
 region = st.selectbox("Select Region", ["Punjab", "UP", "MP", "Bihar"])
 weather_data = {
@@ -237,8 +247,10 @@ weather_data = {
     "Bihar": "🌦️ Cloudy with chances of rain"
 }
 st.warning(weather_data[region])
+if st.button("🔊 Listen to Alert"):
+    text_to_speech(weather_data[region])
 
-# ------------------ Crop Calendar ------------------
+# Crop Calendar
 st.header(lang_content["crop_calendar"])
 season = st.selectbox("Choose Season", ["Rabi", "Kharif", "Zaid"])
 calendar_data = {
@@ -248,7 +260,7 @@ calendar_data = {
 }
 st.success(calendar_data[season])
 
-# ------------------ Mandi Prices ------------------
+# Mandi Prices
 st.subheader("💸 Mandi Prices")
 mandi_data = {
     "wheat": "₹2200/qtl",
@@ -277,32 +289,142 @@ mandi_data = {
     "peas": "₹1400/qtl"
 }
 st.table(mandi_data)
-# Place this right after your imports and before any UI code
 
+# Crop Economics Visualization
+st.subheader("📊 Crop Economics Analysis")
 
-def set_bg_local(image_file):
-    with open(image_file, "rb") as file:
-        encoded = base64.b64encode(file.read()).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded}");
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
+# Load JSON data
+def load_crop_data(file_path="crop_economics.json"):
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        st.error("Crop economics JSON file not found!")
+        return {}
+
+# Calculate economics with enhanced calculations
+def calculate_economics(crop_data):
+    results = []
+    for crop, data in crop_data.items():
+        # Base calculations
+        input_cost = (
+            data["seed_cost"] +
+            data["fertilizer"] +
+            data["labor_cost"] +
+            data["irrigation_cost"] +
+            data["pest_control_cost"]
+        )
+        
+        # Introduce yield variability (±10%)
+        yield_variability = random.uniform(0.9, 1.1)
+        adjusted_yield = data["yield"] * yield_variability
+        
+        # Introduce market price fluctuation (±5%)
+        price_fluctuation = random.uniform(0.95, 1.05)
+        adjusted_price = data["market_price"] * price_fluctuation
+        
+        # Calculate income and profit
+        income = adjusted_yield * adjusted_price
+        profit = income - input_cost
+        
+        # Calculate profit margin
+        profit_margin = (profit / income * 100) if income > 0 else 0
+        
+        results.append({
+            "Crop": crop.capitalize(),
+            "Input Cost": round(input_cost, 2),
+            "Income": round(income, 2),
+            "Profit": round(profit, 2),
+            "Profit Margin (%)": round(profit_margin, 2),
+            "Adjusted Yield": round(adjusted_yield, 2),
+            "Adjusted Price": round(adjusted_price, 2)
+        })
+    return pd.DataFrame(results)
+
+# Load and process data
+crop_data = load_crop_data()
+if crop_data:
+    df = calculate_economics(crop_data)
+    
+    # Display data table
+    st.write("### Crop Economics Data")
+    st.dataframe(df)
+    
+    # Bar chart for profit comparison
+    st.write("### Profit Comparison Across Crops")
+    fig_profit = px.bar(
+        df,
+        x="Crop",
+        y="Profit",
+        color="Crop",
+        title="Profit by Crop",
+        labels={"Profit": "Profit (₹)"},
+        text="Profit",
+        color_discrete_sequence=px.colors.qualitative.Plotly
     )
+    fig_profit.update_traces(texttemplate="₹%{text:,.2f}", textposition="auto")
+    fig_profit.update_layout(
+        xaxis_title="Crop",
+        yaxis_title="Profit (₹)",
+        showlegend=False,
+        template="plotly_white"
+    )
+    st.plotly_chart(fig_profit, use_container_width=True)
+    
+    # Optional grouped bar chart for input cost, income, and profit
+    st.write("### Detailed Economics (Input Cost vs Income vs Profit)")
+    show_grouped = st.checkbox("Show Grouped Bar Chart", value=False)
+    if show_grouped:
+        fig_grouped = go.Figure()
+        fig_grouped.add_trace(go.Bar(
+            x=df["Crop"],
+            y=df["Input Cost"],
+            name="Input Cost",
+            marker_color="#FF4B4B",
+            text=df["Input Cost"],
+            texttemplate="₹%{text:,.2f}",
+            textposition="auto"
+        ))
+        fig_grouped.add_trace(go.Bar(
+            x=df["Crop"],
+            y=df["Income"],
+            name="Income",
+            marker_color="#36A2EB",
+            text=df["Income"],
+            texttemplate="₹%{text:,.2f}",
+            textposition="auto"
+        ))
+        fig_grouped.add_trace(go.Bar(
+            x=df["Crop"],
+            y=df["Profit"],
+            name="Profit",
+            marker_color="#4CAF50",
+            text=df["Profit"],
+            texttemplate="₹%{text:,.2f}",
+            textposition="auto"
+        ))
+        fig_grouped.update_layout(
+            barmode="group",
+            title="Input Cost vs Income vs Profit by Crop",
+            xaxis_title="Crop",
+            yaxis_title="Amount (₹)",
+            legend_title="Metric",
+            template="plotly_white"
+        )
+        st.plotly_chart(fig_grouped, use_container_width=True)
+    
+    # Display additional metrics
+    st.write("### Additional Metrics")
+    st.write(f"Highest Profit Crop: **{df.loc[df['Profit'].idxmax(), 'Crop']}** (₹{df['Profit'].max():,.2f})")
+    st.write(f"Highest Profit Margin: **{df.loc[df['Profit Margin (%)'].idxmax(), 'Crop']}** ({df['Profit Margin (%)'].max():.2f}%)")
 
-# Call the function with the correct file path
-set_bg_local("C:/Users/DELL/Downloads/crop_image.jfif")
-# ------------------ Task Selection ------------------
+# Task Selection
 st.subheader("📋 Task for Today")
 tasks = ["Irrigation", "Apply pesticide to paddy", "Harvest tomatoes"]
 task = st.selectbox("Select Task", tasks)
 st.success(f"Your task for today: {task}")
 
-# ------------------ Footer ------------------
+# Footer
 st.markdown("---")
 st.markdown("Made with ❤️ for Indian Farmers - KrishiMitra")
