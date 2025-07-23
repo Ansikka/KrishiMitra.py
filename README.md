@@ -2,6 +2,8 @@
 
 KrishiMitra is an all-in-one AI-powered digital assistant tailored to support Indian farmers by providing vital agricultural insights, government schemes, real-time mandi prices, weather updates, crop disease detection, and multilingual support. It aims to bridge the technology gap for rural farmers and help improve productivity and decision-making in agriculture.
 
+---
+
 ## Features
 
 - **Multi-Language Support**
@@ -33,13 +35,14 @@ KrishiMitra is an all-in-one AI-powered digital assistant tailored to support In
 
 ```
 KrishiMitra/
-│
-├── assets/               # Crop images or icons
-├── data/                 # JSON files (schemes, prices, translations)
-├── modules/              # Feature-specific Python scripts
-├── krishimitra_app.py    # Main Streamlit app
-├── README.md             # Project documentation
-└── requirements.txt      # Python dependencies
+├── assets/                  # Crop images or icons
+├── data/                    # JSON files (schemes, prices, translations)
+├── modules/                 # Feature-specific Python scripts
+│   ├── KrishiMitraa.py      # Main Streamlit app
+│   ├── krishimitra_app.py   # Additional/legacy modules
+│   └── KishanMitra.py       # Additional/legacy modules
+├── README.md                # Project documentation
+├── requirements.txt         # Python dependencies
 ```
 
 ---
@@ -58,7 +61,8 @@ KrishiMitra/
 
 ## Getting Started
 
-**Prerequisites:** Python 3.8+
+**Prerequisites:**
+- Python 3.8+
 
 **Install dependencies:**
 ```bash
@@ -67,7 +71,7 @@ pip install -r requirements.txt
 
 **Run the App:**
 ```bash
-streamlit run krishimitra_app.py
+streamlit run modules/KrishiMitraa.py
 ```
 
 ---
