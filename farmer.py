@@ -11,24 +11,27 @@ import plotly.graph_objects as go
 import json
 import random
 
-# Set background image
-def set_bg_local(image_file):
-    with open(image_file, "rb") as file:
-        encoded = base64.b64encode(file.read()).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded}");
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# Set background image from root directory
+def set_bg_local(image_file="open.jpeg"):
+    try:
+        with open(image_file, "rb") as file:
+            encoded = base64.b64encode(file.read()).decode()
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/jpg;base64,{encoded}");
+                background-size: cover;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    except FileNotFoundError:
+        st.error(f"Background image '{image_file}' not found in the root directory!")
 
-# Update this path to your local image file
-set_bg_local("C:\\Users\\chait\\OneDrive\\Desktop\\OpenSource Contribution\\KrishiMitra.py\\open.jpeg")
+# Call the function with the image in the root directory
+set_bg_local()
 
 # OpenAI API key
 openai.api_key = "your-openai-api-key"  # Replace with your actual OpenAI API key
