@@ -73,18 +73,27 @@ python -m venv venv
 source venv/bin/activate  # macOS/Linux
 venv\Scripts\activate     # Windows
 ```
-#### Install Dependencies
+#### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
-#### Run the app
+#### 4. Run the app
 ```bash
 streamlit run krishimitra_app.py
 ```
 
-### Government Schemes included: PM-KISAN, PMFBY, KCC, Soil Health Card, eNAM, RKVY, PUSA Krishi.
+### Government Schemes included: 
+1. PM-KISAN
+2. PMFBY
+3. KCC
+4. Soil Health Card
+5. eNAM
+6. RKVY
+7. PUSA Krishi.
 
-### Women-specific schemes: Mahila Kisan Sashaktikaran, Annapurna Scheme, and more.
+### Women-specific schemes: 
+1. Mahila Kisan Sashaktikaran
+2. Annapurna Scheme, and more.
 
 ### Future Improvements:
 1. Chatbot with NLP
@@ -103,4 +112,7 @@ NumFOCUS and Open Science Labs
 Indian Council of Agricultural Research (ICAR)
 Government of India Open Data APIs
 
-Farmers who inspire innovation every day 🌾 Made with love for our farmers. 
+```bash
+Farmers who inspire innovation every day 🌾
+Made with love for our farmers.
+```
