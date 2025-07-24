@@ -19,31 +19,31 @@
 
 ## ✨ Overview
 
-**KrishiMitra 2.0** is an open-source, AI-powered digital assistant tailored for Indian farmers. With a mission to bridge the tech gap in agriculture, it provides real-time solutions for **crop disease detection**, **multilingual remedies**, **mandi prices**, **weather updates**, and more — all through an intuitive interface.
+**KrishiMitra 2.0** is an open-source, AI-powered digital assistant tailored for Indian farmers. It aims to bridge the tech divide in agriculture by offering real-time, location-specific, and accessible information in **multiple Indian languages**. From detecting crop diseases to delivering weather alerts and government schemes — it's your **digital farming buddy**.
 
 ---
 
-## 🔥 Features
+## 🔥 Key Features
 
 | Feature | Description |
 |--------|-------------|
-| 🧠 **Crop Disease Detection** | Upload a photo → AI detects disease → Gives remedies (organic & chemical) |
-| 💬 **BhashaBuddy** | Converts advice into local languages + speaks it aloud via TTS |
-| ☁️ **Weather Forecasting** | Accurate weather insights for proactive planning |
-| 📊 **Mandi Prices** | Real-time prices for crops in your local mandi |
-| 🌱 **Crop Recommender** | Suggests crops based on region, season, and soil |
-| 🧾 **Govt. Schemes** | Latest schemes for farmers (male & female) |
-| 🤖 **ChatBot (Coming Soon)** | Get farming advice instantly using Q&A bot |
+| 🧠 **Crop Disease Detection** | Upload crop photo → AI detects disease → Get organic & chemical remedies |
+| 💬 **BhashaBuddy** | Converts advice to local languages and speaks aloud (via TTS) |
+| ☁️ **Weather Forecasting** | Accurate local weather data using OpenWeather API |
+| 📊 **Mandi Prices** | Real-time market rates from Agmarknet |
+| 🌱 **Crop Recommender** | Suggests ideal crops based on region, soil, and season |
+| 🧾 **Govt. Schemes** | Lists major & women-specific agricultural schemes |
+| 🤖 **Chatbot (Coming Soon)** | NLP-based chatbot for instant farm Q&A |
 
 ---
 
 ## 🧠 Tech Stack
 
 - **Frontend**: [Streamlit](https://streamlit.io/)
-- **Backend**: Python
-- **ML Libraries**: OpenCV, scikit-learn (upcoming)
-- **APIs**: OpenWeatherMap, Agmarknet
-- **Tools**: `gTTS`, `Pillow`, `Geopy`, `Requests`
+- **Backend**: Python + FastAPI (setup in progress)
+- **Machine Learning (Planned)**: OpenCV, Scikit-learn
+- **APIs**: OpenWeatherMap, Agmarknet, Language tools
+- **Modules & Libraries**: `gTTS`, `Pillow`, `Geopy`, `Requests`, `json`, `pandas`
 
 ---
 
@@ -51,15 +51,86 @@
 
 ```bash
 KrishiMitra/
-├── modules/            # All logic modules
+├── modules/
 │   ├── disease_detection.py
 │   ├── remedies.py
 │   ├── weather.py
-│   └── crop_recommender.py
-├── data/               # JSON / CSV files
-├── assets/             # Images / audio
-├── krishimitra_app.py  # Main app
+│   ├── crop_recommender.py
+│   └── advisory_logic.py
+├── data/                # JSON/CSV resources
+├── assets/              # Images/audio/icons
+├── krishimitra_app.py   # Streamlit frontend
+├── main.py              # FastAPI backend (WIP)
 ├── requirements.txt
 └── README.md
+```
 
+---
 
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+
+- Python 3.8+
+- `pip` installed
+
+### 🛠️ Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+### ▶️ Run the App
+
+```bash
+streamlit run krishimitra_app.py
+```
+
+For API testing (once backend is ready):
+
+```bash
+uvicorn main:app --reload
+```
+
+---
+
+## 🏛️ Government Schemes Integrated
+
+Includes major national schemes such as:
+
+- **PM-KISAN**, **PMFBY**, **KCC**, **Soil Health Card**, **eNAM**, **RKVY**, **PUSA Krishi**
+- **For Women**: Mahila Kisan Sashaktikaran Yojana, Annapurna Scheme, and more
+
+---
+
+## 🌱 Future Roadmap
+
+- ✅ Weather Advisory + Voice Output
+- 🔄 Backend APIs with FastAPI
+- 🤖 Chatbot using NLP (HuggingFace / Langchain)
+- 📱 Mobile-responsive PWA
+- 📡 Automated SMS Alerts
+- 📰 Real-time Agri News & Notifications
+
+---
+
+## 👐 Contributing
+
+Pull requests are welcome! For major changes, open an issue first to discuss what you'd like to change.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more information.
+
+---
+
+## 🙏 Acknowledgements
+
+- NumFOCUS & Open Science Labs  
+- ICAR (Indian Council of Agricultural Research)  
+- Government of India Open Data APIs  
+- And the **farmers who inspire us every day** 🌾
+
+<p align="center"><b>Made with love, code, and purpose — for India's farmers 🇮🇳</b></p>
