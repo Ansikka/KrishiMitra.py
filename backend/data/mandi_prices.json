@@ -1,0 +1,61 @@
+{
+  "Rajasthan": {
+    "Udaipur": {
+      "Wheat": [
+        {
+          "market_name": "Udaipur (F&V) Mandi",
+          "min_price": 2300,
+          "max_price": 2400,
+          "modal_price": 2350,
+          "arrival_date": "25/07/2025"
+        }
+      ]
+    },
+    "Chittorgarh": {
+      "Wheat": [
+        {
+          "market_name": "Chittorgarh Mandi",
+          "min_price": 2280,
+          "max_price": 2350,
+          "modal_price": 2320,
+          "arrival_date": "25/07/2025"
+        }
+      ]
+    },
+    "Jodhpur": {
+      "Mustard": [
+        {
+          "market_name": "Jodhpur (F&V) Mandi",
+          "min_price": 5700,
+          "max_price": 5900,
+          "modal_price": 5800,
+          "arrival_date": "25/07/2025"
+        }
+      ]
+    },
+    "Bhilwara": {
+      "Wheat": [
+        {
+          "market_name": "Bhilwara Mandi",
+          "min_price": 2340,
+          "max_price": 2420,
+          "modal_price": 2380,
+          "arrival_date": "25/07/2025"
+        }
+      ]
+    }
+  },
+  "Maharashtra": {
+    "Nagpur": {
+      "Cotton": [
+        {
+          "market_name": "Nagpur Mandi",
+          "min_price": 7000,
+          "max_price": 7200,
+          "modal_price": 7100,
+          "arrival_date": "25/07/2025"
+        }
+      ]
+    }
+  }
+}
