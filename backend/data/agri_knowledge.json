@@ -1,0 +1,18 @@
+{
+  "general_rules": [
+    "High humidity (above 80%) after rain can increase the risk of fungal diseases like blight and rust.",
+    "Do not apply pesticide or fertilizer if heavy rain is expected within the next 24 hours, as it will wash away.",
+    "A sudden temperature drop below 10°C can cause stress to warm-weather crops.",
+    "Consistent wind speeds above 20 kph can lead to soil moisture loss and may damage young plants."
+  ],
+  "crop_specific": {
+    "wheat": [
+      "Optimal sowing time for wheat in Rajasthan is early November when temperatures are cooler.",
+      "Yellow rust is a common disease for wheat in high-humidity conditions."
+    ],
+    "tomato": [
+      "Tomato plants require staking for support as they grow.",
+      "Blight is a major risk for tomatoes during monsoon season."
+    ]
+  }
+}
