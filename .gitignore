@@ -1,0 +1,33 @@
+# Ignore Python cache and environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+.venv/
+*.egg-info/
+
+# Ignore Streamlit and log files
+.streamlit/
+logs/
+*.log
+
+# Ignore system files
+.DS_Store
+
+# Ignore large datasets or outputs
+*.csv
+*.json
+*.xlsx.venv/
+__pycache__/
+.streamlit/
+logs/
+*.log
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.csv
+*.json
+*.xlsx
+.DS_Store
