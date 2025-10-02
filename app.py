@@ -326,9 +326,26 @@ with tab1:
     with col2:
         with st.container(border=True):
             st.header(t["chatbot_header"])
+
+            # Initialize chat history in session state
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+
+            # Display prior chat messages
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
             if prompt := st.chat_input(t["chat_input_placeholder"]):
-                 with st.chat_message("user"):
+                # Add user message to history and display it
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                with st.chat_message("user"):
                     st.markdown(prompt)
-                 with st.chat_message("assistant"):
-                    response = requests.post(f"{BACKEND_URL}/api/v1/chatbot", json={"user_message": prompt, "language": selected_language_code})
-                    st.markdown(response.json().get("response", "..."))
+
+                # Get assistant response and display it
+                with st.chat_message("assistant"):
+                    history_for_api = [{"user": msg["content"]} if msg["role"] == "user" else {"assistant": msg["content"]} for msg in st.session_state.messages[:-1]]
+                    response = requests.post(f"{BACKEND_URL}/api/v1/chatbot", json={"user_message": prompt, "language": selected_language_code, "history": history_for_api})
+                    assistant_response = response.json().get("response", "...")
+                    st.markdown(assistant_response)
+                    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
