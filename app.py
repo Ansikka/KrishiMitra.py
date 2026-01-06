@@ -255,80 +255,193 @@ translations = {
     
 }
 
+
+
 # --- UI Components ---
 
+import streamlit as st
+import requests
+from io import BytesIO
+
+# -------------------------------
+# Sidebar: Language Selector
+# -------------------------------
 with st.sidebar:
     st.header("BhashaBuddy (भाषाबडी)")
-    # --- EXPANDED LANGUAGE OPTIONS ---
+
     language_options = {
         "English": "en", "हिन्दी (Hindi)": "hi", "বাংলা (Bengali)": "bn",
         "తెలుగు (Telugu)": "te", "मराठी (Marathi)": "mr", "தமிழ் (Tamil)": "ta",
         "ગુજરાતી (Gujarati)": "gu", "ಕನ್ನಡ (Kannada)": "kn", "ਪੰਜਾਬੀ (Punjabi)": "pa"
     }
-    selected_language_name = st.selectbox("Choose Language:", list(language_options.keys()))
+
+    selected_language_name = st.selectbox(
+        "Choose Language:",
+        list(language_options.keys()),
+        index=0
+    )
+
     selected_language_code = language_options.get(selected_language_name, "en")
-    t = translations.get(selected_language_code, translations["en"])
+
+    # Safe translation fallback
+    t = translations.get(selected_language_code) or translations["en"]
+
     st.markdown("---")
-    st.info(t["sidebar_info"])
+    st.info(t.get("sidebar_info", "AI-powered farming assistant"))
 
-st.title(f"🌾 {t['header']}")
-st.markdown(f"#### {t['subheader']}")
+# -------------------------------
+# Main Header
+# -------------------------------
+st.title(f"🌾 {t.get('header', 'KrishiMitra')}")
+st.markdown(f"#### {t.get('subheader', '')}")
 
-# --- Main Content Area using Tabs ---
-tab1, tab2, tab3, tab4, tab5 = st.tabs([t["tab_expert_diagnosis"], t["tab_mandi"], t["tab_health"], t["tab_schemes"], t["tab_recommendations"]])
+# -------------------------------
+# Tabs
+# -------------------------------
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    t["tab_expert_diagnosis"],
+    t["tab_mandi"],
+    t["tab_health"],
+    t["tab_schemes"],
+    t["tab_recommendations"]
+])
 
-# --- Tab 1: Expert Diagnosis ---
+# ==========================================================
+# TAB 1: Expert Diagnosis + Chatbot
+# ==========================================================
 with tab1:
     col1, col2 = st.columns([2, 1])
+
+    # -------------------------------
+    # Expert Diagnosis Panel
+    # -------------------------------
     with col1:
         with st.container(border=True):
             st.header(t["expert_header"])
             st.markdown(t["expert_desc"])
 
-            expert_crop = st.text_input(t["enter_crop"], "Tomato")
+            expert_crop = st.text_input(
+                t["enter_crop"],
+                value="Tomato",
+                max_chars=50
+            )
+
             crop_stages = ["Sowing", "Vegetative Growth", "Flowering", "Harvesting"]
             expert_stage = st.selectbox(t["crop_stage"], crop_stages)
-            expert_problem = st.text_area(t["problem_desc"], "Yellow spots with brown edges on lower leaves.")
+
+            expert_problem = st.text_area(
+                t["problem_desc"],
+                value="Yellow spots with brown edges on lower leaves.",
+                height=120
+            )
+
             goals = ["Increase Yield", "Improve Quality", "Reduce Costs", "Control Pests"]
             expert_goal = st.selectbox(t["goal"], goals)
 
-            if st.button(t["get_plan_button"], use_container_width=True, type="primary"):
-                api_endpoint = f"{BACKEND_URL}/api/v1/expert_advice"
-                payload = {
-                    "crop": expert_crop, "crop_stage": expert_stage,
-                    "problem_description": expert_problem, "goal": expert_goal,
-                    "lang": selected_language_code
-                }
-                try:
-                    with st.spinner(t["ai_spinner"]):
-                        response = requests.post(api_endpoint, json=payload, timeout=60)
-                        response.raise_for_status()
-                        data = response.json()
-                        st.subheader(t["expert_plan_header"])
-                        expert_plan_text = data.get("expert_plan", "No plan generated.")
-                        st.markdown(expert_plan_text)
+            if st.button(
+                t["get_plan_button"],
+                use_container_width=True,
+                type="primary"
+            ):
+                if not expert_problem.strip():
+                    st.warning("Please describe the problem clearly.")
+                else:
+                    api_endpoint = f"{BACKEND_URL}/api/v1/expert_advice"
+                    payload = {
+                        "crop": expert_crop.strip(),
+                        "crop_stage": expert_stage,
+                        "problem_description": expert_problem.strip(),
+                        "goal": expert_goal,
+                        "lang": selected_language_code
+                    }
 
-                        # --- RE-INTEGRATED AUDIO ADVICE ---
-                        if expert_plan_text:
+                    try:
+                        with st.spinner(t["ai_spinner"]):
+                            response = requests.post(
+                                api_endpoint,
+                                json=payload,
+                                timeout=60
+                            )
+                            response.raise_for_status()
+                            result = response.json()
+
+                        expert_plan_text = (
+                            result.get("data")
+                            or result.get("expert_plan")
+                            or ""
+                        )
+
+                        if not expert_plan_text:
+                            st.warning("No expert plan generated.")
+                        else:
+                            st.subheader(t["expert_plan_header"])
+                            st.markdown(expert_plan_text)
+
+                            # -------------------------------
+                            # Audio Advice
+                            # -------------------------------
                             st.markdown("---")
                             st.subheader(t["listen_plan"])
-                            with st.spinner(t["audio_spinner"]):
-                                tts_params = {"text": expert_plan_text, "lang": selected_language_code}
-                                audio_response = requests.get(f"{BACKEND_URL}/api/v1/generate_audio", params=tts_params)
-                                if audio_response.status_code == 200:
-                                    st.audio(BytesIO(audio_response.content), format='audio/mpeg')
-                                else:
-                                    st.error(t["audio_error"])
 
-                except requests.exceptions.RequestException as e:
-                    st.error(f"Connection Error: {e}")
-    
+                            try:
+                                with st.spinner(t["audio_spinner"]):
+                                    audio_response = requests.get(
+                                        f"{BACKEND_URL}/api/v1/generate_audio",
+                                        params={
+                                            "text": expert_plan_text,
+                                            "lang": selected_language_code
+                                        },
+                                        timeout=30
+                                    )
+
+                                if audio_response.status_code == 200:
+                                    st.audio(
+                                        BytesIO(audio_response.content),
+                                        format="audio/mpeg"
+                                    )
+                                else:
+                                    st.warning(t["audio_error"])
+
+                            except requests.exceptions.RequestException:
+                                st.warning("Audio service unavailable.")
+
+                    except requests.exceptions.Timeout:
+                        st.error("Request timed out. Please try again.")
+                    except requests.exceptions.ConnectionError:
+                        st.error("Backend server not reachable.")
+                    except requests.exceptions.HTTPError as e:
+                        st.error(f"Server error: {e.response.status_code}")
+                    except Exception:
+                        st.error("Unexpected error occurred.")
+
+    # -------------------------------
+    # Chatbot Panel
+    # -------------------------------
     with col2:
         with st.container(border=True):
             st.header(t["chatbot_header"])
+
             if prompt := st.chat_input(t["chat_input_placeholder"]):
-                 with st.chat_message("user"):
+                with st.chat_message("user"):
                     st.markdown(prompt)
-                 with st.chat_message("assistant"):
-                    response = requests.post(f"{BACKEND_URL}/api/v1/chatbot", json={"user_message": prompt, "language": selected_language_code})
-                    st.markdown(response.json().get("response", "..."))
+
+                with st.chat_message("assistant"):
+                    try:
+                        response = requests.post(
+                            f"{BACKEND_URL}/api/v1/chatbot",
+                            json={
+                                "user_message": prompt,
+                                "language": selected_language_code
+                            },
+                            timeout=30
+                        )
+                        response.raise_for_status()
+                        reply = (
+                            response.json().get("data")
+                            or response.json().get("response")
+                            or "🤖 ..."
+                        )
+                        st.markdown(reply)
+
+                    except requests.exceptions.RequestException:
+                        st.markdown("⚠️ Chat service unavailable.")
