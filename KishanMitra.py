@@ -5,16 +5,42 @@ import base64
 import os
 
 # ------------------ Utility Function ------------------
-def play_audio(text, lang_code='en'):
+
+import streamlit as st
+from gtts import gTTS
+import base64
+from io import BytesIO
+
+def play_audio(text, lang_code='en', autoplay=True):
+    """
+    Convert text to speech and play it in Streamlit.
+
+    Args:
+        text (str): Text to convert to speech.
+        lang_code (str): Language code for TTS (default 'en').
+        autoplay (bool): Whether audio should autoplay (default True).
+    """
+    # Generate TTS audio
     tts = gTTS(text=text, lang=lang_code)
-    filename = "temp_audio.mp3"
-    tts.save(filename)
-    with open(filename, "rb") as audio_file:
-        audio_bytes = audio_file.read()
-    b64 = base64.b64encode(audio_bytes).decode()
-    audio_html = f'<audio autoplay="true" controls="controls"><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>'
+    audio_bytes = BytesIO()
+    tts.write_to_fp(audio_bytes)
+    audio_bytes.seek(0)
+
+    # Encode audio to base64
+    b64_audio = base64.b64encode(audio_bytes.read()).decode()
+    autoplay_attr = 'true' if autoplay else 'false'
+
+    # Embed in HTML audio player
+    audio_html = f'''
+        <audio autoplay="{autoplay_attr}" controls>
+            <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+        </audio>
+    '''
     st.markdown(audio_html, unsafe_allow_html=True)
-    os.remove(filename)
+
+
+
+
 
 # ------------------ Language Data ------------------
 LANGUAGE_DATA = {
@@ -83,6 +109,11 @@ LANGUAGE_DATA = {
         "tts_lang": "hi"
     }
 }
+import streamlit as st
+from datetime import datetime
+import pandas as pd
+
+# Assuming play_audio and LANGUAGE_DATA are already defined
 
 # ------------------ Sidebar for Language ------------------
 st.sidebar.title("🌐 Select Language")
@@ -92,30 +123,32 @@ lang_content = LANGUAGE_DATA[language]
 # ------------------ Main UI ------------------
 st.title(lang_content["welcome"])
 
-if st.button("🔊 Read Aloud"):
-    play_audio(lang_content["welcome"], lang_content["tts_lang"])
+def tts_button(label, text):
+    """Reusable TTS button"""
+    if st.button(label):
+        play_audio(text, lang_content["tts_lang"])
 
-
+tts_button("🔊 Read Aloud", lang_content["welcome"])
 
 # ------------------ Fertilizer Recommendation ------------------
 st.header(lang_content["fertilizer"])
 crop = st.selectbox("Select Crop", ["Wheat", "Rice", "Maize", "Cereals", "Sugarcane", "Potato", "Tomato"])
 soil = st.selectbox("Soil Type", ["Black", "Red", "Sandy", "Brown"])
+
 if st.button("Get Recommendation"):
     rec = f"For {crop} in {soil} soil, use NPK 20:20:0 at 50kg/acre."
     st.success(rec)
-    if st.button("🔊 Listen Recommendation"):
-        play_audio(rec, lang_content["tts_lang"])
+    tts_button("🔊 Listen Recommendation", rec)
 
 # ------------------ Loan/Subsidy Checker ------------------
 st.header(lang_content["loan"])
 age = st.number_input("Enter your age", min_value=18, max_value=80)
 holding = st.selectbox("Land holding (acres)", ["<1", "1-5", ">5"])
+
 if st.button("Check Eligibility"):
     eligible = "You are eligible for KCC and PM-KISAN schemes."
     st.info(eligible)
-    if st.button("🔊 Listen Eligibility"):
-        play_audio(eligible, lang_content["tts_lang"])
+    tts_button("🔊 Listen Eligibility", eligible)
 
 # ------------------ Weather Alerts ------------------
 st.header(lang_content["weather_alert"])
@@ -126,46 +159,33 @@ st.warning("⚠️ Heavy Rain Expected in your region today.")
 # ------------------ Crop Calendar ------------------
 st.header(lang_content["crop_calendar"])
 season = st.selectbox("Choose Season", ["Rabi", "Kharif", "Zaid"])
+
 if st.button("Show Calendar"):
-    calendar = f"For {season}, sow Wheat, Mustard, and Barley."
-    st.success(calendar)
-    if st.button("🔊 Listen Calendar"):
-        play_audio(calendar, lang_content["tts_lang"])
-
-
+    calendar = {
+        "Rabi": "Sow Wheat, Mustard, and Barley.",
+        "Kharif": "Sow Rice, Maize, and Cotton.",
+        "Zaid": "Sow Watermelon, Cucumber, and Muskmelon."
+    }.get(season, "No calendar info available.")
+    
+    st.success(f"For {season} season: {calendar}")
+    tts_button("🔊 Listen Calendar", f"For {season} season: {calendar}")
 
 # ------------------ Mandi Prices ------------------
-st.subheader(['price_info'])
-mandi_data ={
-    "wheat": "₹2200/qtl",
-    "rice": "₹1800/qtl",
-    "mustard": "₹5500/qtl",
-    "maize": "₹1700/qtl",
-    "barley": "₹1600/qtl",
-    "soybean": "₹4800/qtl",
-    "cotton": "₹6600/qtl",
-    "groundnut": "₹5500/qtl",
-    "sugarcane": "₹340/qtl",
-    "potato": "₹1200/qtl",
-    "onion": "₹900/qtl",
-    "tomato": "₹1100/qtl",
-    "bajra": "₹2150/qtl",
-    "jowar": "₹2738/qtl",
-    "urad dal": "₹6600/qtl",
-    "moong dal": "₹7275/qtl",
-    "chana": "₹5400/qtl",
-    "masoor dal": "₹6000/qtl",
-    "banana": "₹1500/qtl",
-    "apple": "₹3000/qtl",
-    "brinjal": "₹900/qtl",
-    "carrot": "₹1100/qtl",
-    "cabbage": "₹850/qtl",
-    "peas": "₹1400/qtl"
+st.subheader("Market Prices (Mandi)")
 
+mandi_data = {
+    "Wheat": "₹2200/qtl", "Rice": "₹1800/qtl", "Mustard": "₹5500/qtl", "Maize": "₹1700/qtl",
+    "Barley": "₹1600/qtl", "Soybean": "₹4800/qtl", "Cotton": "₹6600/qtl", "Groundnut": "₹5500/qtl",
+    "Sugarcane": "₹340/qtl", "Potato": "₹1200/qtl", "Onion": "₹900/qtl", "Tomato": "₹1100/qtl",
+    "Bajra": "₹2150/qtl", "Jowar": "₹2738/qtl", "Urad Dal": "₹6600/qtl", "Moong Dal": "₹7275/qtl",
+    "Chana": "₹5400/qtl", "Masoor Dal": "₹6000/qtl", "Banana": "₹1500/qtl", "Apple": "₹3000/qtl",
+    "Brinjal": "₹900/qtl", "Carrot": "₹1100/qtl", "Cabbage": "₹850/qtl", "Peas": "₹1400/qtl"
 }
-st.table(mandi_data)
+
+# Convert to DataFrame for better display
+mandi_df = pd.DataFrame(list(mandi_data.items()), columns=["Crop", "Price"])
+st.table(mandi_df)
+
 # ------------------ Footer ------------------
 st.markdown("---")
 st.markdown("Made with ❤️ for Indian Farmers - KrishiMitra")
-
-
