@@ -2,7 +2,7 @@
   <img src="https://img.icons8.com/color/96/tractor.png" width="80"/>
 </p>
 
-<h1 align="center">🌾 KrishiMitra 2.0 — AI-Powered Assistant for Indian Farmers</h1>
+<h1 align="center">🌾 KrishiMitra 2.0  AI-Powered Assistant for Indian Farmers</h1>
 
 <p align="center">
   Empowering Indian agriculture with AI | Multilingual Support | Disease Detection | Smart Farming
@@ -19,7 +19,7 @@
 
 ## ✨ Overview
 
-**KrishiMitra 2.0** is an open-source, AI-powered digital assistant tailored for Indian farmers. With a mission to bridge the tech gap in agriculture, it provides real-time solutions for **crop disease detection**, **multilingual remedies**, **mandi prices**, **weather updates**, and more — all through an intuitive interface.
+**KrishiMitra ** is an open-source, AI-powered digital assistant tailored for Indian farmers. With a mission to bridge the tech gap in agriculture, it provides real-time solutions for **crop disease detection**, **multilingual remedies**, **mandi prices**, **weather updates**, and more — all through an intuitive interface.
 
 ---
 
